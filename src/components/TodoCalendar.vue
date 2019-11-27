@@ -1,58 +1,60 @@
 <template>
   <div>
+    <h2>
+      <a href="#" v-on:click="onClickPrev(currentMonth)">◀</a>
+      {{currentYear}}년 {{currentMonth}}월
+      <a href="#" v-on:click="onClickNext(currentMonth)">▶</a>
+    </h2>
+    <h5>
+      <a href="#" v-on:click="return_today()">오늘</a>
+    </h5>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <td v-for="(weekName, index) in weekNames" v-bind:key="index">
+            {{weekName}}
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(row, index) in currentCalendarMatrix" :key="index" >
+          <td v-for="(day, index2) in row" :key="index2" style="padding:30px;">
+           
+            <span v-if="isToday(currentYear, currentMonth, day)" >
+              <span class="rounded">
+                {{day}}
+              </span>
+              <span v-for="(todoItem, index) in propsdata" v-bind:key="todoItem.item">
+                
+                <span v-if="isScehedule(currentYear, currentMonth, day) == ((todoItem.year)+(todoItem.month)+(todoItem.day))">
+                  <div  class="shadow">
+                    <span v-bind:class="{textCompleted:todoItem.completed}">{{ todoItem.item }}</span>
+                  </div>
+                </span>
+              </span>
+            </span>
 
-      <h2>
-        <a href="#" v-on:click="onClickPrev(currentMonth)">◀</a>
-        {{currentYear}}년 {{currentMonth}}월
-        <a href="#" v-on:click="onClickNext(currentMonth)">▶</a>
-      </h2>
-      <h5>
-        <a href="#" v-on:click="return_today()">오늘</a>
-      </h5>
-      <table class="table table-hover">
-          <thead>
-            <tr>
-              <td v-for="(weekName, index) in weekNames" v-bind:key="index">
-                {{weekName}}
-              </td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(row, index) in currentCalendarMatrix" :key="index" >
-              <td v-for="(day, index2) in row" :key="index2" style="padding:30px;">
-                <span v-if="isToday(currentYear, currentMonth, day)" >
-                  <span class="rounded">
-                      {{day}}
-                    </span>
-                   <span v-for="(todoItem, index) in todoItems" v-bind:key="todoItem.item">
-                      <span v-if="isScehedule(currentYear, currentMonth, day) == ((todoItem.year)+(todoItem.month)+(todoItem.day))">
-                        <div  class="shadow">
-                          <span v-bind:class="{textCompleted:todoItem.completed}">{{ todoItem.item }}</span>
-                        </div>
-                      </span>
-                  </span>
+            <span v-else>
+              {{day}}
+              <span v-for="(todoItem, index) in propsdata" v-bind:key="todoItem.item">
+                <span v-if="isScehedule(currentYear, currentMonth, day) == ((todoItem.year)+(todoItem.month)+(todoItem.day))">
+                  <div  class="shadow">
+                    <span v-bind:class="{textCompleted:todoItem.completed}">{{ todoItem.item }}</span>
+                  </div>
                 </span>
-                <span v-else>
-                  {{day}}
-                  <span v-for="(todoItem, index) in todoItems" v-bind:key="todoItem.item">
-                      <span v-if="isScehedule(currentYear, currentMonth, day) == ((todoItem.year)+(todoItem.month)+(todoItem.day))">
-                        <div  class="shadow">
-                          <span v-bind:class="{textCompleted:todoItem.completed}">{{ todoItem.item }}</span>
-                        </div>
-                      </span>
-                  </span>
-                </span>
-              </td>
-            </tr>
-          </tbody>
-      </table>  
-        
+              </span>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>  
   </div>
 </template>
 
 <script>
 export default {
   name: 'Calendar',
+  props:['propsdata'],
   data () {
     
     return {
@@ -194,17 +196,6 @@ export default {
         this.initCalendar();
       }
   },
-  created: function(){
-        if(localStorage.length >0){
-            for(var i = 0 ; i < localStorage.length ; i++)
-            {
-                if(localStorage.key(i) !== 'loglevel:webpack-dev-server')
-                {
-                    this.todoItems.push(JSON.parse(localStorage.getItem(localStorage.key(i))));
-                }
-            }
-        }
-    }
 }
 </script>
 
@@ -217,5 +208,6 @@ export default {
       padding:10px;
       color:#ffffff;
     }
+
 
 </style>

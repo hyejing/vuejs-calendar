@@ -7,11 +7,19 @@
        <span class="addContainer"  v-on:click="addTodo">
         +
         </span>
+
+
+          <Modal v-if="showModal" @close="showModal = false">
+            <h3 slot="header">경고!
+                <span @click="showModal = false"> X </span>
+            </h3>
+            <div slot="body">빈칸을 채워주세요!</div>
+        </Modal>
     </div>
 </template>
 
 <script>
-
+import Modal from './common/Modal.vue'
 
 export default {
     data:function(){
@@ -19,16 +27,20 @@ export default {
             newTodoItem: "",
             newDateYear: "",
             newDateMonth: "",
-            newDateDay: ""
+            newDateDay: "",
+            showModal:false
         }
     },
    methods:{
         addTodo: function(){
-            var obj = {completed: false, year: this.newDateYear, month: this.newDateMonth,day: this.newDateDay,item: this.newTodoItem};
-            //localStorage.setItem(this.newTodoItem, obj);
-            localStorage.setItem(this.newTodoItem, JSON.stringify(obj));
-            //localStorage.setItem(this.newTodoItem, this.newTodoItem);
-            this.clearInput();
+            //var obj = {completed: false, year: this.newDateYear, month: this.newDateMonth,day: this.newDateDay,item: this.newTodoItem};
+           //localStorage.setItem(this.newTodoItem, JSON.stringify(obj));
+            if(this.newTodoItem !== ''){
+                this.$emit('addTodoItem',this.newTodoItem,this.newDateYear,this.newDateMonth,this.newDateDay);
+                this.clearInput();
+            }else{
+                this.showModal = !this.showModal;
+            }
         },
         clearInput:function(){
                this.newTodoItem = '';
@@ -38,7 +50,7 @@ export default {
         }
     },
     components:{
-      
+      Modal
     }
 }
 </script>
