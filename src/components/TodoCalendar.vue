@@ -48,6 +48,30 @@
         </tr>
       </tbody>
     </table>  
+     <ul>
+        <div v-for="(todoItem, index) in propsdata" v-bind:key="todoItem.item" class="shadow">
+          <div v-if="todoItem.modify == false">
+            <li v-if="isScehedule(currentYear, currentMonth,'') == ((todoItem.year)+(todoItem.month))">
+              <div v-bind:class="{checkBtnCompleted: todoItem.completed}"  v-on:click="toggleComplete(todoItem, index)">✔</div>
+              <span v-bind:class="{textCompleted:todoItem.completed}">{{ todoItem.item }}</span>
+              <span class="modifyBtn" v-on:click="modifyItem(todoItem, index)">
+                <div>(수정)</div>
+              </span>
+              <span class="removeBtn" v-on:click="removeTodo(todoItem,index)">
+                <div>X</div>
+              </span>
+            </li>
+            <!--v-for 랑 v-if랑은 같이못쓰겠지,,,-->
+            <li v-else class="hidden"></li>
+          </div>
+          <div v-else>{{ todoItem.item }} -> 
+            <input value="" >
+            <span class="modifyBtn" v-on:click="modifyItem(todoItem, index)">
+                (취소)
+              </span>
+          </div>
+        </div>
+    </ul>
   </div>
 </template>
 
@@ -194,7 +218,16 @@ export default {
         this.currentMonthStartWeekIndex = this.getStartWeek(this.currentYear, this.currentMonth);
         this.endOfDay = this.getEndOfDay(this.currentYear, this.currentMonth);
         this.initCalendar();
-      }
+      },
+        removeTodo:function(todoItem,index){
+            this.$emit('removeItem', todoItem, index);
+        },
+        toggleComplete: function(todoItem,index){
+            this.$emit('toggleItem', todoItem, index);
+        },
+        modifyItem: function(todoItem,index){
+            this.$emit('modifyItem', todoItem, index);
+        },
   },
 }
 </script>
@@ -208,6 +241,53 @@ export default {
       padding:10px;
       color:#ffffff;
     }
+ul{
+    list-style-type: none;
+    padding-left: 0px;
+    margin-top: 0;
+    text-align: left;
+    
+}
+
+li{
+    display: flex;
+    min-height: 50px;
+    height: 50px;
+    line-height: 50px;
+    margin:0.5rem 0;
+    padding: 0 0.9rem;
+    background: white;
+    border-radius: 5px;
+}
+.removeBtn{
+    margin-left: auto;
+    color:#de4343;
+}
+.modifyBtn{
+    color:green;
+}
+.checkBtn{
+    line-height: 45px;
+    color:#62acde;
+    margin-right: 5px;
+}
+.checkBtnCompleted{
+    color:#b3adad;
+}
+.textCompleted{
+    text-decoration: line-through;
+    color:#b3adad;
+}
+
+.list-enter-active, .list-leave-active{
+    transition: all 1s;
+}
+.list-enter, .list-leave-to{
+    opacity:0;
+    transform: translateY(30px);
+}
+
+
 
 
 </style>

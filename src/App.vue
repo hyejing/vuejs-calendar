@@ -2,11 +2,11 @@
   <div id="app">
     <TodoHeader></TodoHeader>
     <TodoInput v-on:addTodoItem = "addOneItem"></TodoInput>
-    <TodoCalendar v-bind:propsdata="todoItems"></TodoCalendar>
-     <TodoList v-bind:propsdata="todoItems"
+    <TodoCalendar v-bind:propsdata="todoItems"
         v-on:removeItem="removeOneItem"
-        v-on:toggleItem="toggleOneItem">
-    </TodoList>
+        v-on:toggleItem="toggleOneItem"
+        v-on:modifyItem="modifyItem">
+        </TodoCalendar>
     <TodoFooter v-on:clearAll="clearAllItems"></TodoFooter>
   </div>
 </template>
@@ -27,7 +27,7 @@ export default {
   },
    methods:{
     addOneItem:function(todoItem,dateYear,dateMonth,dateDay){
-      var obj = {completed: false, year: dateYear, month: dateMonth,day: dateDay,item: todoItem};
+      var obj = {completed: false, year: dateYear, month: dateMonth,day: dateDay,item: todoItem, modify: false};
       localStorage.setItem(todoItem, JSON.stringify(obj));
       this.todoItems.push(obj);
     },
@@ -37,6 +37,11 @@ export default {
     },
     toggleOneItem:function(todoItem, index){
       this.todoItems[index].completed = !this.todoItems[index].completed;
+      localStorage.removeItem(todoItem.item);
+      localStorage.setItem(todoItem.item, JSON.stringify(todoItem));
+    },
+    modifyItem:function(todoItem, index){
+      this.todoItems[index].modify = !this.todoItems[index].modify;
       localStorage.removeItem(todoItem.item);
       localStorage.setItem(todoItem.item, JSON.stringify(todoItem));
     },

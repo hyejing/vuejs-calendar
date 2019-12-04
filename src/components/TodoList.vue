@@ -2,11 +2,13 @@
     <div>
         <ul>
             <li v-for="(todoItem, index) in propsdata" v-bind:key="todoItem.item" class="shadow">
-                <div v-bind:class="{checkBtnCompleted: todoItem.completed}"  v-on:click="toggleComplete(todoItem, index)">✔</div>
-                <span v-bind:class="{textCompleted:todoItem.completed}">{{ todoItem.item }}</span>
-                <span class="removeBtn" v-on:click="removeTodo(todoItem,index)">
-                <div>X</div>
-                </span>
+                <p v-if="(todoItem.year)+(todoItem.month) == (currentYear)+(currentMonth)">
+                    <div v-bind:class="{checkBtnCompleted: todoItem.completed}"  v-on:click="toggleComplete(todoItem, index)">✔</div>
+                    <span v-bind:class="{textCompleted:todoItem.completed}">{{ todoItem.item }}</span>
+                    <span class="removeBtn" v-on:click="removeTodo(todoItem,index)">
+                        <div>X</div>
+                    </span>
+                </p>
             </li>
         </ul>
     </div>
@@ -15,12 +17,13 @@
 
 <script>
 export default {
-    props:['propsdata'],
-    /*data: function(){
-        return{
-            todoItems:[]
+     props:['propsdata'],
+    data () {
+        return {
+        currentYear:  new Date().getFullYear(),
+        currentMonth:  new Date().getMonth()+1,
         }
-    },*/
+  },
     methods:{
         removeTodo:function(todoItem,index){
             this.$emit('removeItem', todoItem, index);
